@@ -1,0 +1,1192 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>RJC TONES</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400..600&display=swap">
+<style id="app-style">
+/* Layout: slim header, full-width hero on the home page, then centered 1120px sections.
+   Each pedal gets its own page; the pedal's color comes from --p0..--p7 and shows on its glyph and footswitch dot. */
+:root {
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --bg: #F4F5F7;
+  --surface: #FFFFFF;
+  --surface-2: #ECEFF3;
+  --ink: #0E1621;
+  --muted: #566070;
+  --line: #DCE0E6;
+  --focus: #2F5FD0;
+  --danger: #B3261E;
+
+  --hero-bg: #13213D;
+  --hero-ink: #F4F6FA;
+  --hero-muted: #B6C0D1;
+  --amber: #FFB547;
+  --screen: #0B0F14;
+
+  --p0: #C0392B;
+  --p1: #D2691E;
+  --p2: #B8860B;
+  --p3: #2E8B57;
+  --p4: #0E7C86;
+  --p5: #2F5FD0;
+  --p6: #6D4AC4;
+  --p7: #C2417A;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B0F14;
+    --surface: #131921;
+    --surface-2: #1A212B;
+    --ink: #EAEEF3;
+    --muted: #9AA5B4;
+    --line: #262E39;
+    --focus: #8FA8FF;
+    --danger: #FF8A80;
+    --hero-bg: #13213D;
+    --p0: #F0786A;
+    --p1: #F0A060;
+    --p2: #E3B94A;
+    --p3: #5CC48A;
+    --p4: #4FC3CF;
+    --p5: #7A9CF5;
+    --p6: #A58BF0;
+    --p7: #F07AAE;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B0F14;
+  --surface: #131921;
+  --surface-2: #1A212B;
+  --ink: #EAEEF3;
+  --muted: #9AA5B4;
+  --line: #262E39;
+  --focus: #8FA8FF;
+  --danger: #FF8A80;
+  --hero-bg: #13213D;
+  --p0: #F0786A;
+  --p1: #F0A060;
+  --p2: #E3B94A;
+  --p3: #5CC48A;
+  --p4: #4FC3CF;
+  --p5: #7A9CF5;
+  --p6: #A58BF0;
+  --p7: #F07AAE;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.inner[hidden] { display: none; }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 14px var(--font-body);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--ink); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.primary:hover { opacity: 0.88; }
+.btn.amber { background: var(--amber); color: #1A1203; border-color: var(--amber); }
+.btn.amber:hover { opacity: 0.9; }
+.btn.ghost { background: transparent; color: var(--hero-ink); border-color: rgba(255, 255, 255, 0.4); }
+.btn.ghost:hover { border-color: #fff; }
+.btn.danger { color: var(--danger); border-color: var(--danger); }
+.btn.small { min-height: 34px; padding: 0 12px; font-size: 13px; }
+.btn[aria-disabled="true"] { opacity: 0.55; cursor: default; pointer-events: none; }
+.busy .btn, .busy .chip { opacity: 0.6; pointer-events: none; }
+
+/* ---------- admin bar (editors only) ---------- */
+.admin { background: var(--ink); color: var(--bg); }
+.admin .inner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding-block: 8px; }
+.admin-label { font: 600 12px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; margin-right: 4px; }
+.admin .btn { background: transparent; color: var(--bg); border-color: rgba(128, 128, 128, 0.7); }
+.admin .btn:hover { border-color: var(--bg); }
+.status { font-size: 13px; opacity: 0.9; min-width: 0; }
+.status.bad { color: #FFB4AB; }
+.admin-spacer { flex: 1 1 auto; }
+
+/* ---------- header ---------- */
+.site-head { background: var(--surface); border-bottom: 1px solid var(--line); }
+.site-head .inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 24px; padding-block: 12px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 800 1.2rem var(--font-display); letter-spacing: -0.02em; min-height: 44px; }
+.brand-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--amber); box-shadow: inset 0 0 0 3px var(--surface), 0 0 0 2px var(--amber); flex: none; }
+.nav { display: flex; flex-wrap: wrap; gap: 4px; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; text-decoration: none; font: 500 15px var(--font-body); color: var(--muted); }
+.nav a:hover { color: var(--ink); background: var(--surface-2); }
+.nav a[aria-current="page"] { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--ink); border-radius: 0; }
+
+/* ---------- editor panel ---------- */
+.editor { margin-top: 20px; background: var(--surface); border: 1px solid var(--ink); border-radius: 10px; padding: 20px; }
+.editor h2 { font: 700 1.125rem var(--font-display); margin: 0; }
+.form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.form .full { grid-column: 1 / -1; }
+@media (max-width: 560px) { .form { grid-template-columns: minmax(0, 1fr); } }
+label { display: grid; gap: 6px; font: 600 13px var(--font-body); min-width: 0; }
+.hint { font-weight: 400; color: var(--muted); }
+input, select, textarea {
+  font: 400 16px var(--font-body);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-height: 44px;
+  width: 100%;
+  min-width: 0;
+}
+textarea { resize: vertical; line-height: 1.45; }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.8; }
+.form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.err { color: var(--danger); font-size: 14px; min-height: 1.3em; margin: 0; }
+
+/* ---------- pedal art (drawn after the real hardware) ---------- */
+.glyph { display: block; width: 100%; --pc: var(--p5); }
+.glyph svg { display: block; width: 100%; height: auto; }
+.pa-shadow { fill: rgba(0, 0, 0, 0.22); }
+.pa-bodypc { fill: var(--pc); }
+.pa-edge { fill: none; stroke-width: 1; }
+.pa-screen { fill: var(--screen); stroke: rgba(255, 255, 255, 0.14); stroke-width: 0.8; }
+.pa-led { fill: var(--amber); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.06em; }
+.pa-knob { stroke: rgba(0, 0, 0, 0.45); stroke-width: 0.8; }
+.pa-mark { stroke: #12161C; stroke-width: 1.6; stroke-linecap: round; }
+.pa-mark-l { stroke: #E8ECEF; }
+.pa-btn { fill: rgba(255, 255, 255, 0.24); }
+.pa-dark { fill: rgba(0, 0, 0, 0.4); }
+.pa-sw { fill: #C9CFD8; stroke: rgba(0, 0, 0, 0.5); stroke-width: 0.8; }
+.pa-sw-in { fill: #EEF1F5; }
+.pa-ring { fill: none; stroke: var(--pc); stroke-width: 1.4; }
+.pa-ridge { stroke: rgba(255, 255, 255, 0.18); stroke-width: 1.2; stroke-linecap: round; }
+.pa-ledbar { fill: var(--pc); }
+
+/* ---------- home hero ---------- */
+.hero { background: var(--hero-bg); color: var(--hero-ink); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 32px 48px; align-items: center; padding-block: 56px; }
+@media (max-width: 820px) { .hero-grid { grid-template-columns: minmax(0, 1fr); padding-block: 40px; } }
+.eyebrow { font: 500 12px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--hero-muted); }
+.hero h1 { font: 800 clamp(2.75rem, 8vw, 5rem)/0.95 var(--font-display); letter-spacing: -0.035em; margin: 18px 0 0; text-wrap: balance; }
+.lede { margin: 18px 0 0; max-width: 52ch; font-size: 1.125rem; color: var(--hero-muted); }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.stats { display: flex; flex-wrap: wrap; gap: 12px 40px; margin: 40px 0 0; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.18); }
+.stats div { min-width: 0; }
+.stats dt { font: 500 12px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--hero-muted); }
+.stats dd { margin: 4px 0 0; font: 600 1.75rem/1.1 var(--font-mono); font-variant-numeric: tabular-nums; }
+.board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 480px; margin: 0 auto; width: 100%; }
+.board .glyph { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 10px; }
+@media (max-width: 820px) { .board { max-width: 420px; } }
+.mission { padding-block: 48px 8px; }
+.mission-card { padding: 28px clamp(20px, 4vw, 40px); background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--amber); border-radius: 12px; }
+.mission-card .eyebrow { color: var(--muted); }
+.mission-card h2 { font: 700 clamp(1.5rem, 3.4vw, 2.1rem)/1.15 var(--font-display); letter-spacing: -0.02em; margin: 10px 0 0; text-wrap: balance; }
+.mission-card p { margin: 10px 0 0; max-width: 62ch; color: var(--muted); font-size: 1.0625rem; }
+.mission-card .verse { margin: 22px 0 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--amber); }
+.mission-card .verse p { margin: 0; color: var(--ink); font: italic 500 1.2rem/1.45 var(--font-display); }
+.mission-card .verse cite { display: block; margin-top: 8px; font: 500 13px var(--font-mono); font-style: normal; letter-spacing: 0.04em; color: var(--muted); }
+
+/* ---------- sections ---------- */
+.section { padding-block: 48px 8px; }
+.section:last-of-type { padding-bottom: 56px; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin-bottom: 20px; }
+.sec-head h2 { font: 700 1.5rem/1.2 var(--font-display); letter-spacing: -0.015em; margin: 0; }
+.sec-head a { font: 600 14px var(--font-body); color: var(--muted); text-underline-offset: 3px; }
+.sec-head a:hover { color: var(--ink); }
+
+.page-head { padding-block: 44px 8px; }
+.page-head h1 { font: 800 clamp(2rem, 5.5vw, 3rem)/1.05 var(--font-display); letter-spacing: -0.03em; margin: 0; text-wrap: balance; }
+.page-head p { margin: 12px 0 0; color: var(--muted); max-width: 60ch; font-size: 1.0625rem; }
+
+/* ---------- pedal directory cards ---------- */
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.pcard { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-decoration: none; min-width: 0; overflow: hidden; }
+.pcard .glyph { background: var(--surface-2); padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.pcard-body { padding: 14px 16px 16px; min-width: 0; }
+.pcard:hover { border-color: var(--ink); }
+.pcard h3 { font: 700 1.125rem/1.25 var(--font-display); margin: 0; overflow-wrap: anywhere; }
+.pcard .brand-line { color: var(--muted); font-size: 14px; margin-top: 2px; }
+.pcard .count { display: inline-block; margin-top: 10px; font: 500 12px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- pedal detail ---------- */
+.phead { background: var(--surface); border-bottom: 1px solid var(--line); }
+.phead-grid { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 32px; align-items: center; padding-block: 36px; }
+@media (max-width: 560px) { .phead-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-block: 24px; } }
+.crumbs { font: 500 13px var(--font-body); color: var(--muted); }
+.crumbs a { text-underline-offset: 3px; }
+.phead .glyph { background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.phead h1 { font: 800 clamp(1.9rem, 5vw, 3rem)/1.05 var(--font-display); letter-spacing: -0.03em; margin: 8px 0 0; overflow-wrap: anywhere; }
+.phead .brand-line { margin: 6px 0 0; color: var(--muted); font-weight: 500; }
+.phead .about { margin: 14px 0 0; max-width: 62ch; color: var(--muted); }
+.phead-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 32px; margin: 18px 0 0; padding: 0; }
+.facts div { min-width: 0; }
+.facts dt { font: 500 11px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 2px 0 0; font: 600 15px var(--font-mono); }
+
+/* ---------- toolbar + chips ---------- */
+.toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; margin-top: 28px; }
+@media (max-width: 560px) { .toolbar { grid-template-columns: minmax(0, 1fr); } }
+.toolbar select { width: auto; min-width: 12rem; }
+@media (max-width: 560px) { .toolbar select { width: 100%; } }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 500 14px var(--font-body);
+  cursor: pointer;
+}
+.chip:hover { border-color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip .n { font: 500 12px var(--font-mono); opacity: 0.7; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pc); flex: none; }
+.result { margin: 20px 0 0; font: 500 13px var(--font-mono); color: var(--muted); }
+
+/* ---------- preset cards ---------- */
+.group { margin-top: 32px; }
+.group-head { display: flex; align-items: center; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.group-head h2 { font: 700 1.25rem/1.2 var(--font-display); margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.group-head h2 a { text-decoration: none; }
+.group-head h2 a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.group-head .count { margin-left: auto; font: 500 13px var(--font-mono); color: var(--muted); white-space: nowrap; }
+.footsw { width: 20px; height: 20px; border-radius: 50%; flex: none; background: var(--pc); box-shadow: inset 0 0 0 4px var(--surface), 0 0 0 2px var(--pc); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; margin-top: 16px; }
+.card { display: flex; flex-direction: column; gap: 10px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; }
+.led { font: 600 14px/1 var(--font-mono); letter-spacing: 0.1em; background: var(--screen); color: var(--amber); padding: 7px 10px; border-radius: 5px; min-width: 3.6em; text-align: center; }
+.led.none { opacity: 0.4; }
+.cat { font: 500 12px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: right; }
+.card h3 { font: 700 1.125rem/1.25 var(--font-display); margin: 0; overflow-wrap: anywhere; }
+.pedal-line { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); min-width: 0; }
+.pedal-line a { min-width: 0; overflow-wrap: anywhere; text-underline-offset: 3px; }
+.notes { margin: 0; color: var(--muted); font-size: 15px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font: 500 12px var(--font-mono); color: var(--muted); }
+.badge { font: 600 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 7px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 6px; }
+
+/* ---------- steps, about, empty ---------- */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 28px; }
+.step { border-top: 2px solid var(--ink); padding-top: 16px; min-width: 0; }
+.step-n { font: 600 13px var(--font-mono); color: var(--muted); letter-spacing: 0.08em; }
+.step h3 { font: 700 1.125rem var(--font-display); margin: 6px 0 6px; }
+.step p { margin: 0; color: var(--muted); }
+.prose { max-width: 62ch; padding-block: 28px 56px; }
+.prose p { margin: 0 0 1em; font-size: 1.0625rem; }
+.thumb { position: relative; display: block; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: linear-gradient(135deg, #1A212B, #0B0F14); text-decoration: none; }
+.thumb-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.thumb-play { position: absolute; left: 50%; top: 46%; width: 56px; height: 40px; margin: -20px 0 0 -28px; border-radius: 12px; background: #E62117; }
+.thumb-play::after { content: ""; position: absolute; left: 23px; top: 11px; border-left: 16px solid #fff; border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+.thumb-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 10px 6px; font: 500 12px var(--font-mono); color: #fff; background: linear-gradient(transparent, rgba(0, 0, 0, 0.7)); }
+.thumb:hover .thumb-play { filter: brightness(1.15); }
+.prose .verse { margin: 28px 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--amber); }
+.prose .verse p { margin: 0; font: italic 500 1.2rem/1.45 var(--font-display); }
+.prose .verse cite { display: block; margin-top: 8px; font: 500 13px var(--font-mono); font-style: normal; letter-spacing: 0.04em; color: var(--muted); }
+.empty { padding: 32px 20px; text-align: center; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); background: var(--surface); }
+.empty strong { display: block; color: var(--ink); font: 700 1.125rem var(--font-display); margin-bottom: 6px; }
+.mt { margin-top: 12px; }
+
+/* ---------- footer ---------- */
+.site-foot { margin-top: 24px; border-top: 1px solid var(--line); background: var(--surface); }
+.site-foot .inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 24px; font-size: 14px; color: var(--muted); }
+.site-foot nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.site-foot a { text-underline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+<div id="root"></div>
+<script type="application/json" id="app-data">{"presets":[{"id":"pmwj04l19uckj","name":"HOLY FOREVER - BETHEL MUSIC","pedal":"Livtra Mosaic","slot":"","category":"Other","notes":"","link":"https://drive.google.com/drive/folders/1vViu1Qq4Bq9CkBGj5dUfcuzw5YGX5A9K?usp=sharing","demo":"https://youtu.be/OXBrBVJdiJo","added":"2026-11-16"},{"id":"pmwj039k1vvqa","name":"THE JOY - THE BELONGING CO","pedal":"NUX MG-50Li","slot":"","category":"Other","notes":"","link":"https://drive.google.com/drive/folders/1xBRnfwfwW7-3gJIZGSW2k8nkYPP4RXQF?usp=sharing","demo":"https://youtu.be/9YJrzOu3zRs","added":"2026-11-16"},{"id":"pmwj02fqfcahn","name":"THE JOY - THE BELONGING CO","pedal":"M-Vave Tank G","slot":"","category":"Other","notes":"","link":"https://drive.google.com/drive/folders/1yqIfwzu0LctV7uYEaT5zKHmD4Y7V1E5C?usp=sharing","demo":"https://youtu.be/uLpgGLnG8Yc","added":"2026-11-16"},{"id":"pmwizoydc6jok","name":"RJC ULTRARIG PRESETS","pedal":"UltraRig Tank G","slot":"","category":"Other","notes":"","link":"https://drive.google.com/drive/folders/1ypvQemqvJoyQIalMbj9h5hLEb_77S6YN?usp=sharing","demo":"https://youtu.be/7UOvwJJnj1g","added":"2026-11-16"}],"pedals":[{"name":"NUX MG-50Li","brand":"NUX","about":"NUX’s 2026 flagship floor unit: 5-inch color screen, six footswitches, a built-in expression pedal and a rechargeable battery.","folder":""},{"name":"NUX MG-30","brand":"NUX","about":"Compact NUX modeler with a 4-inch color screen, three footswitches and a built-in expression pedal.","folder":""},{"name":"Valeton GP-200","brand":"Valeton","about":"Valeton floor processor with a 4.3-inch color screen, eight LED footswitches and a built-in expression pedal.","folder":""},{"name":"M-Vave Tank G","brand":"M-Vave","about":"Portable M-Vave pedal with 36 presets, a dedicated knob for every control and a built-in rechargeable battery.","folder":""},{"name":"Valeton GP-5","brand":"Valeton","about":"Pocket-sized Valeton processor with a color screen, two knobs and a single footswitch.","folder":""},{"name":"Livtra Mosaic","brand":"Livtra","about":"Compact Livtra processor with a color screen, three metal footswitches and a built-in rechargeable battery.","folder":""},{"name":"Line 6 HD500X","brand":"Line 6","about":"Line 6 floor processor with twelve footswitches in two tiers and a built-in expression pedal.","folder":""},{"name":"UltraRig Tank G","brand":"MVAVE","about":"","folder":""}],"about":"These are the multi-effects presets I use for worship playing, and I share them for free.\n\nMy goal is simple: to help church musicians and guitarists play with confidence and excellence, so that more of us can serve well and help advance God’s kingdom through music. Take them, use them, and pass them on.\n\nEvery preset is a file stored on Google Drive. Find your pedal, open the preset, download it and import it with your pedal’s editor software.\n\nNew presets are added as they are finished."}</script>
+<script id="app-script">
+(function () {
+  'use strict';
+
+  const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400..600&display=swap';
+  const RESET = ':root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}';
+  const CATEGORIES = ['Clean', 'Ambient / Pads', 'Crunch', 'Lead', 'Acoustic', 'Other'];
+  const PEDAL_SUGGESTIONS = ['Line 6 Helix', 'Line 6 HX Stomp', 'Boss GT-1000', 'Boss GX-100', 'Zoom G6', 'Zoom G3Xn', 'NUX MG-30', 'Valeton GP-200', 'Hotone Ampero', 'Mooer GE300'];
+  const DEFAULT_ABOUT = "These are the multi-effects presets I use for worship playing, and I share them for free.\n\nMy goal is simple: to help church musicians and guitarists play with confidence and excellence, so that more of us can serve well and help advance God’s kingdom through music. Take them, use them, and pass them on.\n\nEvery preset is a file stored on Google Drive. Find your pedal, open the preset, download it and import it with your pedal’s editor software.\n\nNew presets are added as they are finished.";
+  const NAV = [['home', 'Home'], ['pedals', 'Pedals'], ['presets', 'All presets'], ['about', 'About']];
+  // ---------- pedal art: simplified drawings of each real pedal (viewBox 200 x 150) ----------
+  const E = 'rgba(255,255,255,.2)';
+  const row = (n, x0, dx, f) => { let s = ''; for (let i = 0; i < n; i++) s += f(x0 + dx * i, i); return s; };
+  const rc = (x, y, w, h, r, cls, fill) => '<rect' + (cls ? ' class="' + cls + '"' : '') + (fill ? ' fill="' + fill + '"' : '') + ' x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + r + '"/>';
+  const bd = (x, y, w, h, r, fill, edge) => rc(x, y + 3, w, h, r, 'pa-shadow') + (fill ? rc(x, y, w, h, r, '', fill) : rc(x, y, w, h, r, 'pa-bodypc')) +
+    '<rect class="pa-edge" stroke="' + (edge || E) + '" x="' + (x + .5) + '" y="' + (y + .5) + '" width="' + (w - 1) + '" height="' + (h - 1) + '" rx="' + r + '"/>';
+  const kn = (cx, cy, r, deg, dark) => '<circle class="pa-knob" cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + (dark ? '#262B30' : '#D5DAE1') + '"/>' +
+    '<line class="' + (dark ? 'pa-mark pa-mark-l' : 'pa-mark') + '" x1="' + cx + '" y1="' + cy + '" x2="' + cx + '" y2="' + (cy - r * .8) + '" transform="rotate(' + deg + ' ' + cx + ' ' + cy + ')"/>';
+  const sw = (cx, cy, r, ring) => (ring ? '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r + 1.8) + '" fill="none" stroke="' + ring + '" stroke-width="1.4"/>' : '<circle class="pa-ring" cx="' + cx + '" cy="' + cy + '" r="' + (r + 1.8) + '"/>') + '<circle class="pa-sw" cx="' + cx + '" cy="' + cy + '" r="' + r + '"/><circle class="pa-sw-in" cx="' + cx + '" cy="' + cy + '" r="' + (r * .55) + '"/>';
+  const btn = (x, y, w, h, cls) => rc(x, y, w, h, 1.5, cls || 'pa-btn');
+  const scr = (x, y, w, h, led, fs) => {
+    const n = Math.max(3, Math.floor(w / 11)), cw = (w - 8) / n, c = ['#4FC3CF', '#FFB547', '#7A9CF5', '#5CC48A', '#F07AAE'];
+    return rc(x, y, w, h, 2.5, 'pa-screen') + '<text class="pa-led" x="' + (x + w / 2) + '" y="' + (y + h * .45) + '" font-size="' + fs + '" text-anchor="middle">' + led + '</text>' +
+      row(n, x + 4, cw, (cx, i) => rc(cx, y + h * .64, cw - 2, h * .2, 1, '', c[i % 5]).replace('<rect', '<rect opacity=".8"'));
+  };
+  const treadle = (x, y, w, h) => rc(x, y, w, h, 6, '', '#363B42') + '<rect class="pa-edge" stroke="' + E + '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="6"/>' +
+    row(Math.floor((h - 12) / 6.4), y + 9, 6.4, (yy) => '<line class="pa-ridge" x1="' + (x + 7) + '" x2="' + (x + w - 7) + '" y1="' + yy + '" y2="' + yy + '"/>');
+  const pad = (x, y, w, h) => rc(x, y, w, h, 2.5, '', '#2E3238') + rc(x + 3, y + 1, w - 6, 1.8, .9, 'pa-ledbar');
+  const ART = {
+    // Line 6 POD HD500X: LCD module, 7 amp knobs, 6 + 6 footswitches, treadle
+    hd500x: (led) => bd(4, 28, 192, 90, 6, '#1B1C1F') + rc(20, 33, 49, 29, 2, '', '#0C0D0F') + scr(34, 37, 22, 14, led, 7) +
+      row(4, 31, 8.8, (x) => kn(x, 58, 2.8, 0, 1)) + kn(25, 41, 3.5, 0, 1) + kn(64, 41, 3.5, 30, 1) + rc(24, 66, 40, 2.2, 1, '', '#C9CED6') +
+      [84.5, 94.4, 104.3, 114, 123.7, 133, 148].map((x, i) => kn(x, 49, 4.5, -40 + i * 14, 1)).join('') +
+      [13, 39, 66, 93, 119.5, 147].map((x, i) => sw(x, 80, 4.5, i && i < 5 ? '#E5372E' : '#8A8F98')).join('') +
+      [14, 41, 67.5, 94, 120, 147].map((x, i) => sw(x, 104, 4.5, i == 1 || i == 5 ? '#E5372E' : '#8A8F98')).join('') +
+      rc(164, 42, 30, 76, 4, '', '#101113') + '<line class="pa-ridge" x1="179" x2="179" y1="46" y2="114"/>' + rc(168, 96, 22, 5, 1, '', '#C9CED6'),
+    // NUX MG-50Li (white): screen, two knobs, four buttons, five encoders, two stomp + four footswitches, textured pedal
+    mg50li: (led) => bd(11, 28, 178, 93, 5, '#E8E9EB', 'rgba(0,0,0,.25)') + rc(11, 88.5, 178, .8, 0, '', 'rgba(0,0,0,.18)') + scr(22, 34, 51, 34, led, 11) +
+      kn(91, 50, 5.5, 40, 1) + kn(123, 50, 5.5, -10, 1) + [84.6, 97, 116, 130.4].map((x) => rc(x - 4.5, 60, 9, 3.2, 1.5, '', '#9A9FA8')).join('') +
+      row(5, 26.4, 10.15, (x) => kn(x, 77.6, 4.2, 0, 1)) + rc(23, 87.8, 47, 2.4, 1.2, '', '#B9BEC6') +
+      sw(89.4, 80.4, 5, '#8A8F98') + sw(120.6, 80.4, 5, '#8A8F98') + [26, 58, 90, 121.4].map((x) => sw(x, 112, 5, '#8A8F98')).join('') +
+      rc(153, 37, 36, 82, 4, '', '#2A2C30') + '<path class="pa-ridge" d="M158 52l24 28M168 42l16 38M157 86l28-12M162 104l22-14" fill="none"/>',
+    // NUX MG-30 (black): master + save, 4" screen, four knobs, joystick, signal-block buttons, 3 footswitches, pedal
+    mg30: (led) => bd(14, 26, 172, 96, 6, '#1E2024') + kn(30, 53, 6, 0, 1) + rc(24, 62, 12, 3, 1, '', '#4A4E55') + scr(44, 38, 56, 34, led, 12) +
+      row(4, 48, 14, (x) => kn(x, 82, 4.5, 0, 1)) + rc(46, 91, 54, 2.2, 1, '', '#8F96A1') + '<circle cx="113" cy="52" r="7" fill="#101215" stroke="' + E + '" stroke-width=".8"/>' + rc(108, 65, 10, 3.5, 1.5, '', '#4A4E55') +
+      [40, 48, 56, 64].map((y) => rc(129, y, 9, 4, 1.5, '', '#4A4E55') + rc(141, y, 9, 4, 1.5, '', '#4A4E55')).join('') +
+      row(3, 33, 41, (x) => sw(x, 108, 6.5, '#6B7078')) + rc(152, 36, 34, 64, 4, '', '#101113'),
+    // Valeton GP-200 (black): blue/teal UI, PARA + MASTER, six knobs, block buttons, 4 + 4 ringed footswitches, textured pedal
+    gp200: (led) => bd(14, 22, 172, 104, 4, '#1B1C1F') + rc(20, 28, 120, 46, 4, '', '#07080A') + rc(22, 36, 48, 7, 1, '', '#2D62C9') +
+      '<text class="pa-led" x="46" y="41.6" font-size="6" text-anchor="middle">' + led + '</text>' +
+      row(4, 22, 12.4, (x, i) => rc(x, 44.5, 11, 3.6, 1, '', ['#7A1F2B', '#7A1F2B', '#8A8420', '#1F3C7A'][i])) + row(4, 22, 12.4, (x) => rc(x, 49.5, 11, 3.6, 1, '', '#177C74')) +
+      row(3, 22, 16.2, (x) => rc(x, 56, 15, 8, 1.5, '', '#262A30')) + row(3, 27.6, 17.9, (x) => kn(x, 68, 4.3, 0, 1)) +
+      kn(81, 50, 5.5, 20, 1) + kn(127, 50, 5.5, 30, 1) + row(3, 92, 12.2, (x) => kn(x, 46, 2.8, 0, 1) + kn(x, 56, 2.8, 0, 1)) +
+      row(4, 91, 9, (x) => '<circle cx="' + x + '" cy="39" r="2.4" fill="#2A2D33"/>') + row(10, 78, 6.2, (x) => rc(x - 2.3, 66.6, 4.6, 3, 1, '', '#3A3E45')) +
+      rc(154, 33, 19, 3, 1.5, '', '#3FE06A') + rc(148, 36, 37, 88, 4, '', '#111214') + '<path class="pa-ridge" d="M153 50l20 24M165 42l16 30M152 86l30-14M158 108l22-16" fill="none"/>' +
+      [27, 59.3, 91.6, 124].map((x, i) => sw(x, 87, 5.2, ['#E5372E', '#E5372E', '#F2D21F', '#3F7CF2'][i]) + sw(x, 117.5, 5.2, '#3FD7C8')).join(''),
+    // M-Vave Tank G (teal): long strip, 15 colored knobs, 4 footswitches, bank display
+    tankg: (led) => bd(4, 56, 192, 38, 4, '#3FA39B', 'rgba(0,0,0,.3)') + ['#2A2D33', '#E2492F', '#7E57D9', '#7E57D9', '#4A70E0', '#4A70E0', '#2A2D33', '#2A2D33', '#E2492F', '#E2492F', '#E2492F', '#E2492F', '#E2492F', '#E2492F', '#E2492F']
+      .map((c, i) => '<circle cx="' + (12.5 + i * 12.4) + '" cy="64" r="3.4" fill="' + c + '" stroke="rgba(0,0,0,.4)" stroke-width=".6"/>').join('') +
+      rc(94, 78, 9, 11, 1, '', '#0B0F14') + '<text x="98.5" y="86.6" font-family="monospace" font-weight="700" font-size="8" fill="#FF5A4D" text-anchor="middle">' + (String(parseInt(led, 10) || 0).slice(-1)) + '</text>' +
+      [25, 74, 121, 173].map((x, i) => '<circle cx="' + x + '" cy="84" r="' + (i == 3 ? 7.4 : 6.6) + '" fill="' + (i == 3 ? '#9CCBFF' : '#1A1D21') + '"/><circle cx="' + x + '" cy="84" r="4.2" fill="#C9CFD8" stroke="rgba(0,0,0,.5)" stroke-width=".8"/>').join(''),
+    // Valeton GP-5 (grey): two big knobs, small screen, one glowing footswitch, side jacks
+    gp5: (led) => rc(72, 50, 3, 8, 1, '', '#C9CFD8') + rc(125, 62, 3, 9, 1, '', '#C9CFD8') + bd(76, 17, 48, 115, 10, '#5D6168', 'rgba(255,255,255,.25)') +
+      kn(88.5, 34, 8.5, -50, 1) + kn(112, 34, 8.5, 20, 1) + rc(83.5, 60.5, 34, 19.5, 2, 'pa-screen') + rc(86, 63, 14, 14.5, 1, '', '#2F6FE0') +
+      '<text x="93" y="74.2" font-family="monospace" font-weight="700" font-size="9" fill="#fff" text-anchor="middle">' + led + '</text>' + rc(103, 64, 12, 2, 1, '', '#cfe0ff') + rc(103, 70, 12, 2, 1, '', '#cfe0ff') +
+      '<circle cx="100" cy="113.5" r="14" fill="none" stroke="#3F8CFF" stroke-width="2.4" opacity=".9"/><circle cx="100" cy="113.5" r="11.5" class="pa-sw"/><circle cx="100" cy="113.5" r="5.5" fill="#6B625E"/>',
+    // Livtra Mosaic (white): MASTER + SELECTOR knobs, small color screen, three footswitches with LEDs
+    mosaic: (led) => bd(8, 40, 184, 73, 6, '#ECEDEE', 'rgba(0,0,0,.28)') + kn(38.5, 57.5, 7, 30, 1) + kn(163, 57.5, 7, -20, 1) + '<circle cx="59" cy="57.5" r="3.2" fill="#E8E9EB" stroke="#555" stroke-width=".8"/>' +
+      rc(66.4, 44.5, 44, 32, 3, 'pa-screen') + rc(70, 50, 11, 18, 1.5, '', '#F2A530') + rc(84, 50, 11, 18, 1.5, '', '#E2402F') + rc(98, 50, 9, 18, 1.5, '', '#8A8F98') +
+      [23.5, 97, 172.7].map((x, i) => rc(x - 4, 80, 8, 2.4, 1, '', '#F2D21F') + '<circle cx="' + (i == 1 ? 97 : x) + '" cy="97" r="8.6" class="pa-sw"/><circle cx="' + (i == 1 ? 97 : x) + '" cy="97" r="4.6" class="pa-sw-in"/>').join(''),
+    generic: (led) => bd(40, 28, 120, 94, 10, null) + scr(48, 36, 64, 30, led, 12) + row(3, 62, 38, (x, i) => kn(x, 82, 6, [-40, 10, 55][i])) + row(2, 70, 60, (x) => sw(x, 108, 8))
+  };
+  function artFor(name, brand) {
+    const t = (String(name || '') + ' ' + String(brand || '')).toLowerCase();
+    if (/mg-?50\s*li/.test(t)) return ART.mg50li;
+    if (/mg-?30\b/.test(t)) return ART.mg30;
+    if (/gp-?200/.test(t)) return ART.gp200;
+    if (/tank[\s-]?g/.test(t)) return ART.tankg;
+    if (/gp-?5\b/.test(t)) return ART.gp5;
+    if (/livtra\s*mosaic/.test(t)) return ART.mosaic;
+    if (/hd\s*-?500/.test(t)) return ART.hd500x;
+    return ART.generic;
+  }
+
+  // ---------- helpers ----------
+  const clean = (s, max) => String(s == null ? '' : s).trim().slice(0, max);
+  const today = () => new Date().toISOString().slice(0, 10);
+  const uid = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+  function safeLink(s) {
+    try { const u = new URL(String(s || '').trim()); return u.protocol === 'https:' ? u.href : ''; } catch (e) { return ''; }
+  }
+  function safeYouTube(s) {
+    try { const u = new URL(String(s || '').trim()); return u.protocol === 'https:' && /^(www\.|m\.)?(youtube\.com|youtu\.be)$/i.test(u.hostname) ? u.href : ''; } catch (e) { return ''; }
+  }
+  const pedalKey = (n) => String(n || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  function hash36(s) {
+    let x = 5381;
+    for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0;
+    return x;
+  }
+  const pedalColor = (key) => 'var(--p' + (hash36(key) % 8) + ')';
+  function fmtDate(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+    if (!m) return '';
+    return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach((k) => {
+        const v = attrs[k];
+        if (v == null || v === false) return;
+        if (k === 'class') el.className = v;
+        else if (k === 'text') el.textContent = v;
+        else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), v);
+        else el.setAttribute(k, v === true ? '' : v);
+      });
+    }
+    kids.flat().forEach((c) => {
+      if (c == null || c === false) return;
+      el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return el;
+  }
+  const clear = (el) => { while (el.firstChild) el.removeChild(el.firstChild); };
+  const withPc = (el, key) => { el.style.setProperty('--pc', pedalColor(key)); return el; };
+  function glyph(colorVar, led, name, brand) {
+    const s = h('span', { class: 'glyph', 'aria-hidden': 'true' });
+    s.innerHTML = '<svg viewBox="0 0 200 150" focusable="false">' + artFor(name, brand)(String(led || '01').replace(/[^0-9A-Za-z]/g, '')) + '</svg>';
+    s.style.setProperty('--pc', colorVar);
+    return s;
+  }
+  function cap(name) {
+    try {
+      if (!window.claude || !window.claude.use) return Promise.resolve(null);
+      return Promise.resolve(window.claude.use(name)).then((v) => v || null, () => null);
+    } catch (e) { return Promise.resolve(null); }
+  }
+
+  // ---------- data ----------
+  function normPreset(p) {
+    const o = {
+      id: clean(p && p.id, 40) || uid(),
+      name: clean(p && p.name, 120),
+      pedal: clean(p && p.pedal, 60).replace(/\s+/g, ' '),
+      slot: clean(p && p.slot, 12),
+      category: CATEGORIES.indexOf(p && p.category) >= 0 ? p.category : 'Other',
+      notes: clean(p && p.notes, 400),
+      link: safeLink(p && p.link),
+      demo: safeYouTube(p && p.demo),
+      added: clean(p && p.added, 10) || today()
+    };
+    if (p && p.sample) o.sample = true;
+    return o;
+  }
+  function normPedal(p) {
+    const o = {
+      name: clean(p && p.name, 60).replace(/\s+/g, ' '),
+      brand: clean(p && p.brand, 60),
+      about: clean(p && p.about, 600),
+      folder: safeLink(p && p.folder)
+    };
+    if (p && p.sample) o.sample = true;
+    return o;
+  }
+  let state;
+  try {
+    const raw = JSON.parse(document.getElementById('app-data').textContent) || {};
+    const seen = {};
+    state = {
+      presets: (Array.isArray(raw.presets) ? raw.presets : []).map(normPreset).filter((p) => p.name && p.pedal),
+      pedals: (Array.isArray(raw.pedals) ? raw.pedals : []).map(normPedal).filter((p) => {
+        const k = pedalKey(p.name);
+        if (!p.name || seen[k]) return false;
+        seen[k] = 1; return true;
+      }),
+      about: clean(raw.about, 1200)
+    };
+  } catch (e) { state = { presets: [], pedals: [], about: '' }; }
+  const mk = (patch) => Object.assign({}, state, patch);
+
+  function allPedals(st) {
+    st = st || state;
+    const map = new Map();
+    st.pedals.forEach((p) => {
+      const k = pedalKey(p.name);
+      if (!map.has(k)) map.set(k, { key: k, name: p.name, brand: p.brand, about: p.about, folder: p.folder, sample: !!p.sample, profile: true, count: 0, latest: '' });
+    });
+    st.presets.forEach((p) => {
+      const k = pedalKey(p.pedal);
+      let e = map.get(k);
+      if (!e) { e = { key: k, name: p.pedal, brand: '', about: '', folder: '', sample: false, profile: false, count: 0, latest: '' }; map.set(k, e); }
+      e.count++;
+      if (p.added > e.latest) e.latest = p.added;
+    });
+    const list = Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base', numeric: true }));
+    const used = {};
+    list.forEach((e) => {
+      let base = 'pedal-' + (e.key.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || hash36(e.key).toString(36));
+      let slug = base, i = 2;
+      while (used[slug]) slug = base + '-' + i++;
+      used[slug] = 1; e.slug = slug;
+    });
+    return list;
+  }
+  const pedalByKey = (key) => allPedals().find((e) => e.key === key) || null;
+  function canonicalPedal(name) {
+    const k = pedalKey(name);
+    const hit = allPedals().find((e) => e.key === k);
+    return hit ? hit.name : String(name).trim().replace(/\s+/g, ' ');
+  }
+  const cmpName = (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base', numeric: true });
+  function cmpSlot(a, b) {
+    if (!a.slot && !b.slot) return 0;
+    if (!a.slot) return 1;
+    if (!b.slot) return -1;
+    return a.slot.localeCompare(b.slot, undefined, { numeric: true, sensitivity: 'base' });
+  }
+  const newestFirst = (list) => list.slice().sort((a, b) => (a.added < b.added ? 1 : a.added > b.added ? -1 : 0));
+  function matchesQuery(p, q) {
+    return !q || [p.name, p.pedal, p.category, p.slot, p.notes].join(' ').toLowerCase().indexOf(q) >= 0;
+  }
+
+  // ---------- ui state ----------
+  const ui = { q: '', sort: 'pedal', pedal: '', cat: '', editor: null, confirmId: null, confirmPedal: false, canEdit: false, busy: false };
+  try {
+    const s = localStorage.getItem('jc-sort');
+    if (s && ['pedal', 'newest', 'name', 'category', 'slot'].indexOf(s) >= 0) ui.sort = s;
+  } catch (e) {}
+  try {
+    const go = sessionStorage.getItem('jc-go');
+    if (go) { sessionStorage.removeItem('jc-go'); location.hash = go; }
+  } catch (e) {}
+
+  function getRoute() {
+    let s = '';
+    try { s = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+    if (!s || s === 'home') return { name: 'home' };
+    if (s === 'pedals' || s === 'presets' || s === 'about') return { name: s };
+    if (s.indexOf('pedal-') === 0) return { name: 'pedal', entry: allPedals().find((x) => x.slug === s) || null };
+    return { name: 'home' };
+  }
+  let route = getRoute();
+
+  // ---------- saving ----------
+  function buildDoc(next) {
+    const css = document.getElementById('app-style').textContent;
+    const js = document.getElementById('app-script').textContent;
+    const data = JSON.stringify(next).replace(/</g, '\\u003c');
+    const CLOSE = '</scr' + 'ipt>';
+    return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>' + RESET + '</style></head><body>' +
+      '<title>RJC TONES</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n<link rel="stylesheet" href="' + FONT_HREF + '">\n' +
+      '<style id="app-style">' + css + '</style>\n<div id="root"></div>\n' +
+      '<script type="application/json" id="app-data">' + data + CLOSE + '\n' +
+      '<script id="app-script">' + js + CLOSE + '</body></html>';
+  }
+  function setStatus(msg, bad) {
+    elStatus.textContent = msg || '';
+    elStatus.className = 'status' + (bad ? ' bad' : '');
+  }
+  function persist(next, okMsg, goHash) {
+    if (ui.busy) return Promise.resolve(false);
+    return cap('artifact').then((a) => {
+      if (!a || typeof a.publish !== 'function') {
+        setStatus('Saving is not available in this view. Open the page in claude.ai to edit.', true);
+        return false;
+      }
+      ui.busy = true;
+      root.classList.add('busy');
+      setStatus('Saving…');
+      if (goHash) { try { sessionStorage.setItem('jc-go', goHash); } catch (e) {} }
+      return a.publish(buildDoc(next)).then(() => {
+        state = next;
+        ui.editor = null; ui.confirmId = null; ui.confirmPedal = false;
+        setStatus(okMsg || 'Saved. The page is reloading.');
+        renderAll();
+        return true;
+      }, (e) => {
+        if (goHash) { try { sessionStorage.removeItem('jc-go'); } catch (x) {} }
+        const code = e && e.code;
+        if (code === 'conflict') setStatus('Someone saved before you. The page is reloading with their version.', true);
+        else if (code === 'not_writer' || code === 'not_granted' || code === 'consent_required') {
+          ui.canEdit = false; renderAll();
+          setStatus('This view is read-only, so nothing was saved.', true);
+        } else if (code === 'too_large') setStatus('The page is too large to save. Remove some presets first.', true);
+        else if (code === 'rate_limited') setStatus('Too many saves in a row. Wait a moment, then try again.', true);
+        else setStatus('Could not save. Check your connection and try again.', true);
+        return false;
+      }).then((ok) => { ui.busy = false; root.classList.remove('busy'); return ok; });
+    });
+  }
+
+  // ---------- shell ----------
+  const root = document.getElementById('root');
+  const elStatus = h('span', { class: 'status', role: 'status', 'aria-live': 'polite' });
+  const elAdmin = h('div', { class: 'admin', hidden: true });
+  const elNav = h('nav', { class: 'nav', 'aria-label': 'Main' });
+  const elEditor = h('section', { class: 'editor', 'aria-label': 'Editor' });
+  const elEditorWrap = h('div', { class: 'inner', hidden: true }, elEditor);
+  const elMain = h('main', { id: 'main' });
+  const elFoot = h('footer', { class: 'site-foot' });
+  root.append(
+    elAdmin,
+    h('header', { class: 'site-head' }, h('div', { class: 'inner' },
+      h('a', { class: 'brand', href: '#home' }, h('span', { class: 'brand-dot', 'aria-hidden': 'true' }), 'RJC TONES'),
+      elNav
+    )),
+    elEditorWrap,
+    elMain,
+    elFoot
+  );
+
+  function renderNav() {
+    clear(elNav);
+    NAV.forEach(([key, label]) => {
+      const active = route.name === key || (key === 'pedals' && route.name === 'pedal');
+      elNav.appendChild(h('a', { href: '#' + key, 'aria-current': active ? 'page' : null, text: label }));
+    });
+  }
+  function renderFoot() {
+    clear(elFoot);
+    elFoot.appendChild(h('div', { class: 'inner' },
+      h('span', { text: '© ' + new Date().getFullYear() + ' RJC TONES. Free presets for church musicians and guitarists, hosted on Google Drive.' }),
+      h('nav', { 'aria-label': 'Footer' }, NAV.map(([key, label]) => h('a', { href: '#' + key, text: label })))
+    ));
+  }
+
+  // ---------- shared view pieces ----------
+  function copyLink(text, btn) {
+    const done = () => { btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = 'Copy link'; }, 1600); };
+    const fallback = () => {
+      try {
+        const t = h('textarea', { 'aria-hidden': 'true' });
+        t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+        document.body.appendChild(t); t.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(t);
+        if (ok) done(); else btn.textContent = 'Copy failed';
+      } catch (e) { btn.textContent = 'Copy failed'; }
+    };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+  }
+
+  function ytId(u) {
+    try {
+      const x = new URL(u), host = x.hostname.replace(/^(www\.|m\.)/, '');
+      if (host === 'youtu.be') return x.pathname.slice(1).split('/')[0];
+      const m = /^\/(shorts|embed|live)\/([\w-]+)/.exec(x.pathname);
+      return m ? m[2] : (x.searchParams.get('v') || '');
+    } catch (e) { return ''; }
+  }
+  function demoThumb(url) {
+    if (!url) return null;
+    const id = ytId(url).replace(/[^\w-]/g, '');
+    const img = id ? h('img', { class: 'thumb-img', src: 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg', alt: '', loading: 'lazy' }) : null;
+    if (img) img.addEventListener('error', () => { img.hidden = true; });
+    return h('a', { class: 'thumb', href: url, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Watch the demo on YouTube' }, img,
+      h('span', { class: 'thumb-play', 'aria-hidden': 'true' }), h('span', { class: 'thumb-cap', text: 'Watch demo on YouTube' }));
+  }
+  function presetCard(p, showPedal) {
+    const entry = showPedal ? pedalByKey(pedalKey(p.pedal)) : null;
+    const actions = h('div', { class: 'actions' });
+    if (p.link) {
+      actions.appendChild(h('a', { class: 'btn primary', href: p.link, target: '_blank', rel: 'noopener noreferrer', text: 'Open in Drive' }));
+      const cb = h('button', { type: 'button', class: 'btn', text: 'Copy link' });
+      cb.addEventListener('click', () => copyLink(p.link, cb));
+      actions.appendChild(cb);
+    } else {
+      actions.appendChild(h('span', { class: 'btn', 'aria-disabled': 'true', text: 'No Drive link yet' }));
+    }
+
+    if (ui.canEdit) {
+      if (ui.confirmId === p.id) {
+        actions.append(
+          h('button', { type: 'button', class: 'btn danger', text: 'Delete it', onclick: () => persist(mk({ presets: state.presets.filter((x) => x.id !== p.id) }), 'Preset deleted. The page is reloading.') }),
+          h('button', { type: 'button', class: 'btn', text: 'Keep', onclick: () => { ui.confirmId = null; renderMain(); } })
+        );
+      } else {
+        actions.append(
+          h('button', { type: 'button', class: 'btn', text: 'Edit', onclick: () => openEditor({ type: 'preset', id: p.id }) }),
+          h('button', { type: 'button', class: 'btn', text: 'Delete', onclick: () => { ui.confirmId = p.id; renderMain(); } })
+        );
+      }
+    }
+    const pedalLine = showPedal ? withPc(h('div', { class: 'pedal-line' }, h('span', { class: 'dot' }),
+      entry ? h('a', { href: '#' + entry.slug, text: p.pedal }) : h('span', { text: p.pedal })), pedalKey(p.pedal)) : null;
+    return h('article', { class: 'card' },
+      h('div', { class: 'card-top' },
+        h('span', { class: 'led' + (p.slot ? '' : ' none'), text: p.slot || '---', title: p.slot ? 'Slot on the pedal' : 'No slot set' }),
+        h('span', { class: 'cat', text: p.category })
+      ),
+      h('h3', { text: p.name }),
+      pedalLine,
+      p.notes ? h('p', { class: 'notes', text: p.notes }) : null,
+      demoThumb(p.demo),
+      h('div', { class: 'card-meta' }, p.sample ? h('span', { class: 'badge', text: 'Sample' }) : null, h('span', { text: 'Added ' + fmtDate(p.added) })),
+      actions
+    );
+  }
+
+  function pedalCard(e) {
+    return h('a', { class: 'pcard', href: '#' + e.slug },
+      glyph(pedalColor(e.key), String(e.count).padStart(2, '0'), e.name, e.brand),
+      h('div', { class: 'pcard-body' },
+        h('h3', { text: e.name }),
+        e.brand ? h('div', { class: 'brand-line', text: e.brand }) : null,
+        h('span', { class: 'count', text: plural(e.count, 'preset') })
+      )
+    );
+  }
+
+  function emptyBox(title, body, ownerBody) {
+    return h('div', { class: 'empty' }, h('strong', { text: title }), ui.canEdit && ownerBody ? ownerBody : body);
+  }
+
+  function section(title, linkText, linkHref, body) {
+    return h('section', { class: 'section' }, h('div', { class: 'inner' },
+      title || linkText ? h('div', { class: 'sec-head' }, title ? h('h2', { text: title }) : null, linkText ? h('a', { href: linkHref, text: linkText }) : null) : null,
+      body
+    ));
+  }
+
+  function cardGrid(items, showPedal) {
+    const g = h('div', { class: 'grid' });
+    items.forEach((p) => g.appendChild(presetCard(p, showPedal)));
+    return g;
+  }
+
+  function chipRow(options, current, onPick, label) {
+    // options: [{value, label, count, key?}]
+    const row = h('div', { class: 'chips', role: 'group', 'aria-label': label });
+    options.forEach((o) => {
+      const b = h('button', { type: 'button', class: 'chip', 'aria-pressed': current === o.value ? 'true' : 'false', onclick: () => onPick(o.value) },
+        o.key ? withPc(h('span', { class: 'dot' }), o.key) : null, o.label, h('span', { class: 'n', text: String(o.count) }));
+      row.appendChild(b);
+    });
+    return row;
+  }
+
+  // ---------- pages ----------
+  function pageHome() {
+    const pedals = allPedals();
+    const total = state.presets.length;
+    const stat = (label, value) => h('div', null, h('dt', { text: label }), h('dd', { text: String(value) }));
+    const hero = h('section', { class: 'hero' }, h('div', { class: 'inner hero-grid' },
+      h('div', null,
+        h('div', { class: 'eyebrow', text: 'Free worship guitar presets' }),
+        h('h1', { text: 'RJC TONES' }),
+        h('p', { class: 'lede', text: 'Free multi-effects presets for worship playing, made to help church musicians and guitarists serve with confidence. Choose your pedal, open the preset in Google Drive and import it.' }),
+        h('div', { class: 'cta' },
+          h('a', { class: 'btn amber', href: '#pedals', text: 'Browse pedals' }),
+          h('a', { class: 'btn ghost', href: '#presets', text: 'See all presets' })
+        ),
+        h('dl', { class: 'stats' }, stat('Presets', total), stat('Pedals', pedals.length), stat('Price', 'Free'))
+      ),
+      h('div', { class: 'board', 'aria-hidden': 'true' }, [['NUX MG-50Li', 'NUX'], ['Valeton GP-200', 'Valeton'], ['M-Vave Tank G', 'M-Vave'], ['Line 6 HD500X', 'Line 6']].map((p, i) => glyph(pedalColor(pedalKey(p[0])), '0' + (i + 1), p[0], p[1])))
+    ));
+
+    const mission = h('section', { class: 'mission' }, h('div', { class: 'inner' }, h('div', { class: 'mission-card' },
+      h('div', { class: 'eyebrow', text: 'Why they are free' }),
+      h('h2', { text: 'Free presets for everyone who serves through music.' }),
+      h('p', { text: 'My goal is to help church musicians and guitarists sound their best, so they can play with confidence and excellence and, together, help advance God’s kingdom through music. Every preset here is a gift: take it, use it, and pass it on.' }),
+      h('blockquote', { class: 'verse' }, h('p', { text: '“Make a joyful noise unto the LORD, all ye lands. Serve the LORD with gladness: come before his presence with singing.”' }), h('cite', { text: 'Psalm 100:1–2 (KJV)' }))
+    )));
+    const pedalBody = pedals.length
+      ? h('div', { class: 'pgrid' }, pedals.slice(0, 8).map(pedalCard))
+      : emptyBox('No pedals yet', 'Pedals will appear here once presets are added.', 'Use Add pedal or Add preset in the bar above to get started.');
+    const latest = newestFirst(state.presets).slice(0, 6);
+    const latestBody = latest.length
+      ? cardGrid(latest, true)
+      : emptyBox('No presets yet', 'Presets will appear here once they are added.', 'Use Add preset in the bar above to add the first one.');
+
+    const steps = h('div', { class: 'steps' },
+      [['1', 'Pick your pedal', 'Every pedal has its own page with the presets built for it.'],
+       ['2', 'Open the file in Drive', 'Each preset links to its file on Google Drive. Download it for free.'],
+       ['3', 'Import and play', 'Load the file with your pedal’s editor software, then copy it to a slot.']]
+        .map((s) => h('div', { class: 'step' }, h('div', { class: 'step-n', text: 'STEP ' + s[0] }), h('h3', { text: s[1] }), h('p', { text: s[2] })))
+    );
+    const frag = document.createDocumentFragment();
+    frag.append(hero, mission,
+      section('Find your pedal', pedals.length > 8 ? 'All pedals' : '', '#pedals', pedalBody),
+      section('Latest presets', total > 6 ? 'All presets' : '', '#presets', latestBody),
+      section('How it works', '', '', steps));
+    return frag;
+  }
+
+  function pagePedals() {
+    const pedals = allPedals();
+    const frag = document.createDocumentFragment();
+    frag.append(
+      h('div', { class: 'inner page-head' }, h('h1', { text: 'Pedals' }), h('p', { text: 'Each multi-effects pedal has its own page. Choose yours to see the presets built for it.' })),
+      section('', '', '', pedals.length
+        ? h('div', { class: 'pgrid' }, pedals.map(pedalCard))
+        : emptyBox('No pedals yet', 'Pedals will appear here once presets are added.', 'Use Add pedal in the bar above to add the first one.'))
+    );
+    return frag;
+  }
+
+  function sortControls(onChange, withGroup) {
+    const search = h('input', { id: 'q', type: 'search', placeholder: 'Search by name, slot or sound', autocomplete: 'off', 'aria-label': 'Search presets', oninput: (e) => { ui.q = e.target.value; onChange(); } });
+    search.value = ui.q;
+    const sel = h('select', { id: 'sort', 'aria-label': 'Sort presets', onchange: (e) => {
+      ui.sort = e.target.value;
+      try { localStorage.setItem('jc-sort', ui.sort); } catch (err) {}
+      onChange();
+    } },
+      withGroup ? h('option', { value: 'pedal', text: 'Group by pedal' }) : null,
+      h('option', { value: 'newest', text: 'Newest first' }),
+      h('option', { value: 'name', text: 'Name A to Z' }),
+      h('option', { value: 'category', text: 'Sound type' }),
+      h('option', { value: 'slot', text: 'Slot order' })
+    );
+    sel.value = (!withGroup && ui.sort === 'pedal') ? 'slot' : ui.sort;
+    return h('div', { class: 'toolbar' }, search, sel);
+  }
+  function applySort(list, mode) {
+    const l = list.slice();
+    if (mode === 'name') l.sort(cmpName);
+    else if (mode === 'category') l.sort((a, b) => (CATEGORIES.indexOf(a.category) - CATEGORIES.indexOf(b.category)) || cmpName(a, b));
+    else if (mode === 'newest') return newestFirst(l);
+    else l.sort((a, b) => cmpSlot(a, b) || cmpName(a, b));
+    return l;
+  }
+
+  function pagePresets() {
+    const chipsHost = h('div');
+    const listHost = h('div');
+    const draw = () => {
+      const pedals = allPedals();
+      if (ui.pedal && !pedals.some((e) => e.key === ui.pedal)) ui.pedal = '';
+      clear(chipsHost);
+      if (pedals.length) {
+        chipsHost.appendChild(chipRow(
+          [{ value: '', label: 'All pedals', count: state.presets.length }].concat(pedals.map((e) => ({ value: e.key, label: e.name, count: e.count, key: e.key }))),
+          ui.pedal, (v) => { ui.pedal = v; draw(); }, 'Filter by pedal'));
+      }
+      clear(listHost);
+      const q = ui.q.trim().toLowerCase();
+      const items = state.presets.filter((p) => (!ui.pedal || pedalKey(p.pedal) === ui.pedal) && matchesQuery(p, q));
+      if (!state.presets.length) {
+        listHost.appendChild(h('div', { class: 'mt' }, emptyBox('No presets yet', 'Presets will appear here once they are added.', 'Use Add preset in the bar above to add the first one.')));
+        return;
+      }
+      if (!items.length) {
+        listHost.appendChild(h('div', { class: 'mt' }, emptyBox('Nothing matches', 'No preset fits the current search and filter.', null),
+          h('div', { class: 'mt' }, h('button', { type: 'button', class: 'btn', text: 'Clear filters', onclick: () => { ui.q = ''; ui.pedal = ''; renderMain(); } }))));
+        return;
+      }
+      if (items.length !== state.presets.length) listHost.appendChild(h('p', { class: 'result', text: 'Showing ' + items.length + ' of ' + state.presets.length }));
+      if (ui.sort === 'pedal') {
+        pedals.forEach((e) => {
+          const g = applySort(items.filter((p) => pedalKey(p.pedal) === e.key), 'slot');
+          if (!g.length) return;
+          listHost.appendChild(withPc(h('section', { class: 'group' },
+            h('div', { class: 'group-head' }, h('span', { class: 'footsw' }), h('h2', null, h('a', { href: '#' + e.slug, text: e.name })), h('span', { class: 'count', text: plural(g.length, 'preset') })),
+            cardGrid(g, false)), e.key));
+        });
+      } else {
+        listHost.appendChild(cardGrid(applySort(items, ui.sort), true));
+      }
+    };
+    const frag = document.createDocumentFragment();
+    frag.append(h('div', { class: 'inner page-head' }, h('h1', { text: 'All presets' }), h('p', { text: 'Every preset on the site. Filter by pedal, search, or change how they are sorted.' })),
+      h('div', { class: 'inner', style: null }, sortControls(draw, true), chipsHost, listHost, h('div', { class: 'mt' })));
+    draw();
+    return frag;
+  }
+
+  function pagePedal(entry) {
+    if (!entry) {
+      const frag = document.createDocumentFragment();
+      frag.append(h('div', { class: 'inner page-head' }, h('h1', { text: 'Pedal not found' }), h('p', { text: 'That pedal is not on the site. It may have been removed.' }),
+        h('div', { class: 'phead-actions' }, h('a', { class: 'btn primary', href: '#pedals', text: 'See all pedals' }))));
+      return frag;
+    }
+    const mine = state.presets.filter((p) => pedalKey(p.pedal) === entry.key);
+    const cats = CATEGORIES.map((c) => ({ value: c, label: c, count: mine.filter((p) => p.category === c).length })).filter((c) => c.count);
+    if (ui.cat && !cats.some((c) => c.value === ui.cat)) ui.cat = '';
+
+    const actions = h('div', { class: 'phead-actions' });
+    if (entry.folder) actions.appendChild(h('a', { class: 'btn primary', href: entry.folder, target: '_blank', rel: 'noopener noreferrer', text: 'Open Drive folder' }));
+    if (ui.canEdit) {
+      actions.appendChild(h('button', { type: 'button', class: 'btn', text: 'Edit pedal', onclick: () => openEditor({ type: 'pedal', key: entry.key }) }));
+      if (ui.confirmPedal) {
+        actions.append(
+          h('button', { type: 'button', class: 'btn danger', text: 'Delete pedal and ' + plural(mine.length, 'preset'), onclick: () => {
+            persist(mk({ presets: state.presets.filter((p) => pedalKey(p.pedal) !== entry.key), pedals: state.pedals.filter((p) => pedalKey(p.name) !== entry.key) }), 'Pedal deleted. The page is reloading.', 'pedals');
+          } }),
+          h('button', { type: 'button', class: 'btn', text: 'Keep', onclick: () => { ui.confirmPedal = false; renderMain(); } })
+        );
+      } else {
+        actions.appendChild(h('button', { type: 'button', class: 'btn', text: 'Delete pedal', onclick: () => { ui.confirmPedal = true; renderMain(); } }));
+      }
+    }
+    const fact = (k, v) => h('div', null, h('dt', { text: k }), h('dd', { text: v }));
+    const head = h('section', { class: 'phead' }, h('div', { class: 'inner phead-grid' },
+      glyph(pedalColor(entry.key), String(entry.count).padStart(2, '0'), entry.name, entry.brand),
+      h('div', { style: null },
+        h('div', { class: 'crumbs' }, h('a', { href: '#pedals', text: 'Pedals' }), ' / ' + entry.name),
+        h('h1', { text: entry.name }),
+        entry.brand ? h('p', { class: 'brand-line', text: entry.brand }) : null,
+        entry.about ? h('p', { class: 'about', text: entry.about }) : null,
+        h('dl', { class: 'facts' }, fact('Presets', String(entry.count)), fact('Sound types', String(cats.length)), fact('Last added', entry.latest ? fmtDate(entry.latest) : 'None yet')),
+        actions
+      )
+    ));
+    head.style.setProperty('--pc', pedalColor(entry.key));
+
+    const chipsHost = h('div');
+    const listHost = h('div', { class: 'mt' });
+    const draw = () => {
+      clear(chipsHost);
+      if (cats.length > 1) chipsHost.appendChild(chipRow([{ value: '', label: 'All sounds', count: mine.length }].concat(cats), ui.cat, (v) => { ui.cat = v; draw(); }, 'Filter by sound type'));
+      clear(listHost);
+      const q = ui.q.trim().toLowerCase();
+      const items = mine.filter((p) => (!ui.cat || p.category === ui.cat) && matchesQuery(p, q));
+      if (!mine.length) {
+        listHost.appendChild(emptyBox('No presets for this pedal yet', 'Presets for this pedal will appear here once they are added.', 'Use Add preset in the bar above to add one for this pedal.'));
+      } else if (!items.length) {
+        listHost.appendChild(emptyBox('Nothing matches', 'No preset fits the current search and filter.', null));
+      } else {
+        listHost.appendChild(cardGrid(applySort(items, ui.sort === 'pedal' ? 'slot' : ui.sort), false));
+      }
+    };
+    const frag = document.createDocumentFragment();
+    frag.append(head, h('div', { class: 'inner' }, mine.length ? sortControls(draw, false) : null, chipsHost, listHost, h('div', { class: 'mt' }), h('div', { class: 'mt' })));
+    draw();
+    return frag;
+  }
+
+  function pageAbout() {
+    const text = state.about || DEFAULT_ABOUT;
+    const frag = document.createDocumentFragment();
+    frag.append(
+      h('div', { class: 'inner page-head' }, h('h1', { text: 'About' })),
+      h('div', { class: 'inner' }, h('div', { class: 'prose' },
+        text.split(/\n{2,}/).map((para) => h('p', { text: para.trim() })).filter((p) => p.textContent),
+        h('blockquote', { class: 'verse' }, h('p', { text: '“Make a joyful noise unto the LORD, all ye lands. Serve the LORD with gladness: come before his presence with singing.”' }), h('cite', { text: 'Psalm 100:1–2 (KJV)' })),
+        ui.canEdit ? h('button', { type: 'button', class: 'btn', text: 'Edit about text', onclick: () => openEditor({ type: 'about' }) }) : null
+      ))
+    );
+    return frag;
+  }
+
+  // ---------- admin + editor ----------
+  function renderAdmin() {
+    elAdmin.hidden = !ui.canEdit;
+    clear(elAdmin);
+    if (!ui.canEdit) return;
+    const hasSamples = state.presets.some((p) => p.sample) || state.pedals.some((p) => p.sample);
+    elAdmin.appendChild(h('div', { class: 'inner' },
+      h('span', { class: 'admin-label', text: 'Editing' }),
+      h('button', { type: 'button', class: 'btn small', text: 'Add preset', onclick: () => openEditor({ type: 'preset', id: 'new' }) }),
+      h('button', { type: 'button', class: 'btn small', text: 'Bulk add', onclick: () => openEditor({ type: 'bulk' }) }),
+      h('button', { type: 'button', class: 'btn small', text: 'Add pedal', onclick: () => openEditor({ type: 'pedal', key: null }) }),
+      h('button', { type: 'button', class: 'btn small', text: 'Edit about', onclick: () => openEditor({ type: 'about' }) }),
+      hasSamples ? h('button', { type: 'button', class: 'btn small', text: 'Remove samples', onclick: () => {
+        const presets = state.presets.filter((p) => !p.sample);
+        const pedals = state.pedals.filter((p) => !(p.sample && !presets.some((x) => pedalKey(x.pedal) === pedalKey(p.name))));
+        persist(mk({ presets, pedals }), 'Samples removed. The page is reloading.', 'pedals');
+      } }) : null,
+      h('span', { class: 'admin-spacer' }),
+      elStatus
+    ));
+  }
+
+  function openEditor(ed) {
+    ui.editor = ed; ui.confirmId = null; ui.confirmPedal = false;
+    renderEditor(); renderMain();
+    elEditorWrap.scrollIntoView({ block: 'nearest' });
+  }
+  function closeEditor() { ui.editor = null; renderEditor(); }
+
+  function pedalOptions() {
+    const seen = {}, out = [];
+    allPedals().map((e) => e.name).concat(PEDAL_SUGGESTIONS).forEach((n) => {
+      const k = pedalKey(n);
+      if (seen[k]) return;
+      seen[k] = 1; out.push(h('option', { value: n }));
+    });
+    return h('datalist', { id: 'pedal-list' }, out);
+  }
+  const field = (label, hint, control, full) => h('label', { class: full ? 'full' : null }, h('span', null, label, hint ? h('span', { class: 'hint', text: ' ' + hint }) : null), control);
+  const catSelect = (id) => h('select', { id }, CATEGORIES.map((c) => h('option', { value: c, text: c })));
+  const actionsRow = (submitText) => h('div', { class: 'full form-actions' },
+    h('button', { type: 'submit', class: 'btn primary', text: submitText }),
+    h('button', { type: 'button', class: 'btn', text: 'Cancel', onclick: closeEditor }));
+
+  function formPreset() {
+    const existing = ui.editor.id === 'new' ? null : state.presets.find((p) => p.id === ui.editor.id) || null;
+    const defaultPedal = route.name === 'pedal' && route.entry ? route.entry.name : '';
+    const p = existing || { name: '', pedal: defaultPedal, slot: '', category: 'Clean', notes: '', link: '' };
+    const inName = h('input', { id: 'f-name', type: 'text', maxlength: '120', autocomplete: 'off' });
+    const inPedal = h('input', { id: 'f-pedal', type: 'text', list: 'pedal-list', maxlength: '60', autocomplete: 'off' });
+    const inSlot = h('input', { id: 'f-slot', type: 'text', maxlength: '12', autocomplete: 'off', placeholder: '03A' });
+    const inCat = catSelect('f-cat');
+    const inLink = h('input', { id: 'f-link', type: 'text', inputmode: 'url', autocomplete: 'off', placeholder: 'https://drive.google.com/file/d/...' });
+    const inNotes = h('textarea', { id: 'f-notes', rows: '3', maxlength: '400' });
+    const inDemo = h('input', { id: 'f-demo', type: 'text', inputmode: 'url', autocomplete: 'off', placeholder: 'https://www.youtube.com/watch?v=...' });
+    inName.value = p.name; inPedal.value = p.pedal; inSlot.value = p.slot; inCat.value = p.category; inLink.value = p.link; inNotes.value = p.notes; inDemo.value = p.demo || '';
+    const err = h('p', { class: 'err', role: 'alert' });
+    const form = h('form', { class: 'form', novalidate: true, onsubmit: (e) => {
+      e.preventDefault();
+      const name = clean(inName.value, 120), pedal = clean(inPedal.value, 60);
+      const linkRaw = inLink.value.trim(), link = safeLink(linkRaw);
+      if (!name) { err.textContent = 'Give the preset a name.'; inName.focus(); return; }
+      if (!pedal) { err.textContent = 'Choose or type the pedal this preset is for.'; inPedal.focus(); return; }
+      if (linkRaw && !link) { err.textContent = 'The Drive link must start with https://'; inLink.focus(); return; }
+      const demoRaw = inDemo.value.trim();
+      if (demoRaw && !safeYouTube(demoRaw)) { err.textContent = 'The demo link must be a YouTube link starting with https://'; inDemo.focus(); return; }
+      const rec = normPreset({ id: existing ? existing.id : uid(), name, pedal: canonicalPedal(pedal), slot: inSlot.value, category: inCat.value, notes: inNotes.value, link, demo: demoRaw, added: existing ? existing.added : today() });
+      const presets = existing ? state.presets.map((x) => (x.id === existing.id ? rec : x)) : [rec].concat(state.presets);
+      persist(mk({ presets }), existing ? 'Preset updated. The page is reloading.' : 'Preset added. The page is reloading.');
+    } },
+      h('div', { class: 'full' }, h('h2', { text: existing ? 'Edit preset' : 'Add preset' })),
+      field('Preset name', '', inName),
+      field('Pedal', '(pick one or type a new pedal)', inPedal),
+      field('Slot', '(bank and slot on the pedal)', inSlot),
+      field('Sound type', '', inCat),
+      field('Google Drive link', '(share the file with anyone who has the link)', inLink, true),
+      field('YouTube demo', '(optional, a youtube.com or youtu.be link)', inDemo, true),
+      field('Notes', '(optional)', inNotes, true),
+      pedalOptions(),
+      h('div', { class: 'full' }, err),
+      actionsRow('Save preset'));
+    setTimeout(() => { try { inName.focus(); } catch (e) {} }, 0);
+    return form;
+  }
+
+  function formBulk() {
+    const defaultPedal = route.name === 'pedal' && route.entry ? route.entry.name : '';
+    const inPedal = h('input', { id: 'b-pedal', type: 'text', list: 'pedal-list', maxlength: '60', autocomplete: 'off' });
+    const inCat = catSelect('b-cat');
+    const inLines = h('textarea', { id: 'b-lines', rows: '8', placeholder: 'Ambient Pad Wash | https://drive.google.com/file/d/... | 02A\nSunday Clean Swell | https://drive.google.com/file/d/... | 01A' });
+    inPedal.value = defaultPedal;
+    const err = h('p', { class: 'err', role: 'alert' });
+    const form = h('form', { class: 'form', novalidate: true, onsubmit: (e) => {
+      e.preventDefault();
+      const pedal = clean(inPedal.value, 60);
+      if (!pedal) { err.textContent = 'Choose or type the pedal for this batch.'; inPedal.focus(); return; }
+      const lines = inLines.value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+      if (!lines.length) { err.textContent = 'Paste at least one line.'; inLines.focus(); return; }
+      const canon = canonicalPedal(pedal), added = [];
+      for (let i = 0; i < lines.length; i++) {
+        const parts = lines[i].split(/\s*\|\s*|\t/);
+        const name = clean(parts[0], 120), linkRaw = (parts[1] || '').trim(), slot = parts[2] || '', demoRaw = (parts[3] || '').trim();
+        if (!name || /^https?:\/\//i.test(name)) { err.textContent = 'Line ' + (i + 1) + ' needs a preset name before the link.'; return; }
+        const link = safeLink(linkRaw);
+        if (linkRaw && !link) { err.textContent = 'Line ' + (i + 1) + ': the Drive link must start with https://'; return; }
+        const demo = safeYouTube(demoRaw);
+        if (demoRaw && !demo) { err.textContent = 'Line ' + (i + 1) + ': the demo must be a YouTube link starting with https://'; return; }
+        added.push(normPreset({ id: uid(), name, pedal: canon, slot, category: inCat.value, notes: '', link, demo, added: today() }));
+      }
+      persist(mk({ presets: added.concat(state.presets) }), plural(added.length, 'preset') + ' added. The page is reloading.');
+    } },
+      h('div', { class: 'full' }, h('h2', { text: 'Bulk add' })),
+      field('Pedal', '(applies to every line)', inPedal),
+      field('Sound type', '(applies to every line)', inCat),
+      field('One preset per line', '(name | Drive link | slot | YouTube demo, the last two are optional)', inLines, true),
+      pedalOptions(),
+      h('div', { class: 'full' }, err),
+      actionsRow('Add presets'));
+    setTimeout(() => { try { inPedal.focus(); } catch (e) {} }, 0);
+    return form;
+  }
+
+  function formPedal() {
+    const entry = ui.editor.key ? pedalByKey(ui.editor.key) : null;
+    const inName = h('input', { id: 'e-name', type: 'text', maxlength: '60', autocomplete: 'off' });
+    const inBrand = h('input', { id: 'e-brand', type: 'text', maxlength: '60', autocomplete: 'off', placeholder: 'Line 6, Boss, Zoom' });
+    const inFolder = h('input', { id: 'e-folder', type: 'text', inputmode: 'url', autocomplete: 'off', placeholder: 'https://drive.google.com/drive/folders/...' });
+    const inAbout = h('textarea', { id: 'e-about', rows: '3', maxlength: '600' });
+    if (entry) { inName.value = entry.name; inBrand.value = entry.brand; inFolder.value = entry.folder; inAbout.value = entry.about; }
+    const err = h('p', { class: 'err', role: 'alert' });
+    const form = h('form', { class: 'form', novalidate: true, onsubmit: (e) => {
+      e.preventDefault();
+      const name = clean(inName.value, 60).replace(/\s+/g, ' ');
+      const folderRaw = inFolder.value.trim(), folder = safeLink(folderRaw);
+      if (!name) { err.textContent = 'Give the pedal a name.'; inName.focus(); return; }
+      const newKey = pedalKey(name);
+      if (allPedals().some((x) => x.key === newKey && (!entry || x.key !== entry.key))) { err.textContent = 'A pedal with that name already exists.'; inName.focus(); return; }
+      if (folderRaw && !folder) { err.textContent = 'The Drive folder link must start with https://'; inFolder.focus(); return; }
+      const profile = normPedal({ name, brand: inBrand.value, about: inAbout.value, folder });
+      const oldKey = entry ? entry.key : newKey;
+      const pedals = state.pedals.filter((p) => pedalKey(p.name) !== oldKey).concat([profile]);
+      const presets = entry && entry.key !== newKey ? state.presets.map((p) => (pedalKey(p.pedal) === entry.key ? Object.assign({}, p, { pedal: name }) : p)) : state.presets;
+      const next = mk({ presets, pedals });
+      const slug = allPedals(next).find((x) => x.key === newKey).slug;
+      persist(next, entry ? 'Pedal updated. The page is reloading.' : 'Pedal added. The page is reloading.', slug);
+    } },
+      h('div', { class: 'full' }, h('h2', { text: entry ? 'Edit pedal' : 'Add pedal' })),
+      field('Pedal name', '(for example Line 6 HX Stomp)', inName),
+      field('Brand', '(optional)', inBrand),
+      field('Google Drive folder', '(optional, holds every preset for this pedal)', inFolder, true),
+      field('About this pedal', '(optional)', inAbout, true),
+      h('div', { class: 'full' }, err),
+      actionsRow('Save pedal'));
+    setTimeout(() => { try { inName.focus(); } catch (e) {} }, 0);
+    return form;
+  }
+
+  function formAbout() {
+    const inText = h('textarea', { id: 'a-text', rows: '9', maxlength: '1200' });
+    inText.value = state.about || DEFAULT_ABOUT;
+    const err = h('p', { class: 'err', role: 'alert' });
+    const form = h('form', { class: 'form', novalidate: true, onsubmit: (e) => {
+      e.preventDefault();
+      persist(mk({ about: clean(inText.value, 1200) }), 'About text saved. The page is reloading.');
+    } },
+      h('div', { class: 'full' }, h('h2', { text: 'Edit about text' })),
+      field('Text', '(leave a blank line between paragraphs)', inText, true),
+      h('div', { class: 'full' }, err),
+      actionsRow('Save text'));
+    setTimeout(() => { try { inText.focus(); } catch (e) {} }, 0);
+    return form;
+  }
+
+  function renderEditor() {
+    clear(elEditor);
+    if (!ui.canEdit || !ui.editor) { elEditorWrap.hidden = true; return; }
+    elEditorWrap.hidden = false;
+    const t = ui.editor.type;
+    elEditor.appendChild(t === 'preset' ? formPreset() : t === 'bulk' ? formBulk() : t === 'pedal' ? formPedal() : formAbout());
+  }
+
+  // ---------- render ----------
+  function renderMain() {
+    route = getRoute();
+    clear(elMain);
+    const page = route.name === 'home' ? pageHome()
+      : route.name === 'pedals' ? pagePedals()
+      : route.name === 'presets' ? pagePresets()
+      : route.name === 'about' ? pageAbout()
+      : pagePedal(route.entry);
+    elMain.appendChild(page);
+    renderNav();
+  }
+  function renderAll() {
+    renderAdmin();
+    renderEditor();
+    renderMain();
+    renderFoot();
+  }
+
+  renderAll();
+  window.addEventListener('hashchange', () => {
+    ui.q = ''; ui.pedal = ''; ui.cat = ''; ui.confirmId = null; ui.confirmPedal = false; ui.editor = null;
+    renderEditor();
+    renderMain();
+    window.scrollTo(0, 0);
+  });
+
+  // Editing tools appear only for people who can edit this page.
+  cap('user').then((u) => {
+    if (!u) return;
+    return Promise.all([
+      Promise.resolve(u.canEdit ? u.canEdit() : false).catch(() => false),
+      Promise.resolve(u.isOwner ? u.isOwner() : false).catch(() => false)
+    ]).then((r) => { if (r[0] || r[1]) { ui.canEdit = true; renderAll(); } });
+  });
+})();
+</script></body></html>
